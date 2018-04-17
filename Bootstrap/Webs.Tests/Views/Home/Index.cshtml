@@ -8,7 +8,7 @@
 @using Webs.Bootstraps.Thumbnails
 @using Webs.Bootstraps.Toolbar
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "首页";
 
     //This is used for code blocks demo (<pre> tag)
     string code =
@@ -21,17 +21,17 @@
 <div class="span12">
     @using (var subNav = Html.Bootstrap().Begin(new SubNavBar()))
     {
-        subNav.Item("Modal", "#demoModal");
-        subNav.Item("Tabs", "#demoTabs");
-        subNav.Item("Accordion", "#demoAccordion");
+        subNav.Item("弹框", "#demoModal");
+        subNav.Item("选项卡", "#demoTabs");
+        subNav.Item("手风琴", "#demoAccordion");
         subNav.Item("Other", "#demoOther");
-        subNav.Item("Toolbar", "#demoToolbar");
+        subNav.Item("工具条", "#demoToolbar");
         subNav.Item("Thumbnails", "#demoThumbs");
         subNav.Item("Carousel", "#demoCarousel");
         subNav.Item("Code Blocks", "#demoCodeBlocks");
         subNav.Item("Forms", Url.Action("DemoForm", "Home"));
 
-        subNav.DropDownItem("DropDown", new List<BootstrapListItem>
+        subNav.DropDownItem("下拉", new List<BootstrapListItem>
         {
             new BootstrapListItem { Text = "Something", Url = "#something" },
             new BootstrapListItem { Text = "Something Else", Url = "#something-else" },

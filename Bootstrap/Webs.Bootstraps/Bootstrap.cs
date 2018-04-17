@@ -17,25 +17,36 @@ using Webs.Bootstraps.Toolbar;
 
 namespace Webs.Bootstraps
 {
+    /// <summary>
+    /// Bootstrap扩展
+    /// </summary>
+    /// <typeparam name="TModel">视图模型</typeparam>
     public class Bootstrap<TModel>
     {
-        private readonly HtmlHelper<TModel> helper;
 
+        #region [Bootstrap]
+
+        private readonly HtmlHelper<TModel> _helper;
+        /// <summary>
+        /// Bootstrap扩展
+        /// </summary>
+        /// <param name="helper">视图持有的HtmlHelper实例</param>
         internal Bootstrap(HtmlHelper<TModel> helper)
         {
-            this.helper = helper;
+            _helper = helper;
         }
 
-        #region Accordion
+        #endregion
+
+        #region [Accordion]
 
         public AccordionBuilder<TModel> Begin(Accordion.Accordion accordion)
         {
             if (accordion == null)
             {
-                throw new ArgumentNullException("accordion");
+                throw new ArgumentNullException(nameof(accordion));
             }
-
-            return new AccordionBuilder<TModel>(this.helper, accordion);
+            return new AccordionBuilder<TModel>(_helper, accordion);
         }
 
         #endregion Accordion
@@ -98,7 +109,7 @@ namespace Webs.Bootstraps
                 default: builder.AddCssClass("btn"); break;
             }
 
-            var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
+            var urlHelper = new UrlHelper(_helper.ViewContext.RequestContext);
             builder.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routeValues));
 
             return MvcHtmlString.Create(builder.ToString());
@@ -207,21 +218,28 @@ namespace Webs.Bootstraps
         {
             if (carousel == null)
             {
-                throw new ArgumentNullException("carousel");
+                throw new ArgumentNullException(nameof(carousel));
             }
 
-            return new CarouselBuilder<TModel>(this.helper, carousel);
+            return new CarouselBuilder<TModel>(_helper, carousel);
         }
 
         #endregion Carousel
 
         #region CodeBlock
-
+        /// <summary>
+        /// 代码块
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="prettyify"></param>
+        /// <param name="showLineNumbers"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <returns></returns>
         public MvcHtmlString CodeBlock(string text, bool prettyify = true, bool showLineNumbers = true, object htmlAttributes = null)
         {
             if (string.IsNullOrEmpty(text))
             {
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
             }
 
             var builder = new TagBuilder("pre");
@@ -250,21 +268,17 @@ namespace Webs.Bootstraps
 
         private static BootstrapDynamicFormBuilder<TModel> DefaultDynamicFormBuilder(HtmlHelper<TModel> helper)
         {
-            if (defaultDynamicFormBuilder == null)
-            {
-                defaultDynamicFormBuilder = new BootstrapDynamicFormBuilder<TModel>(helper);
-            }
-            return defaultDynamicFormBuilder;
+            return defaultDynamicFormBuilder ?? (defaultDynamicFormBuilder = new BootstrapDynamicFormBuilder<TModel>(helper));
         }
 
         public MvcHtmlString DynamicForm()
         {
-            return DynamicForm(DefaultDynamicFormBuilder(helper));
+            return DynamicForm(DefaultDynamicFormBuilder(_helper));
         }
 
         public MvcHtmlString DynamicForm(IDynamicFormBuilder<TModel> builder)
         {
-            return builder.Build(helper.ViewData.Model);
+            return builder.Build(_helper.ViewData.Model);
         }
 
         #endregion DynamicForm
@@ -276,43 +290,43 @@ namespace Webs.Bootstraps
 
         public BootstrapFormBuilder<TModel> BeginForm(object htmlAttributes)
         {
-            string rawUrl = this.helper.ViewContext.HttpContext.Request.RawUrl;
+            string rawUrl = _helper.ViewContext.HttpContext.Request.RawUrl;
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(BootstrapFormType.Horizontal, rawUrl, FormMethod.Post, new RouteValueDictionary(htmlAttributes)));
+                _helper, new BootstrapForm(BootstrapFormType.Horizontal, rawUrl, FormMethod.Post, new RouteValueDictionary(htmlAttributes)));
         }
 
         public BootstrapFormBuilder<TModel> BeginForm(IDictionary<string, object> htmlAttributes)
         {
-            string rawUrl = this.helper.ViewContext.HttpContext.Request.RawUrl;
+            string rawUrl = _helper.ViewContext.HttpContext.Request.RawUrl;
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(BootstrapFormType.Horizontal, rawUrl, FormMethod.Post, htmlAttributes));
+                _helper, new BootstrapForm(BootstrapFormType.Horizontal, rawUrl, FormMethod.Post, htmlAttributes));
         }
 
         public BootstrapFormBuilder<TModel> BeginForm(BootstrapFormType formType)
         {
-            string rawUrl = this.helper.ViewContext.HttpContext.Request.RawUrl;
+            string rawUrl = _helper.ViewContext.HttpContext.Request.RawUrl;
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(formType, rawUrl, FormMethod.Post, new RouteValueDictionary()));
+                _helper, new BootstrapForm(formType, rawUrl, FormMethod.Post, new RouteValueDictionary()));
         }
 
         public BootstrapFormBuilder<TModel> BeginForm(BootstrapFormType formType, object htmlAttributes)
         {
-            string rawUrl = this.helper.ViewContext.HttpContext.Request.RawUrl;
+            string rawUrl = _helper.ViewContext.HttpContext.Request.RawUrl;
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(formType, rawUrl, FormMethod.Post, new RouteValueDictionary(htmlAttributes)));
+                _helper, new BootstrapForm(formType, rawUrl, FormMethod.Post, new RouteValueDictionary(htmlAttributes)));
         }
 
         public BootstrapFormBuilder<TModel> BeginForm(BootstrapFormType formType, IDictionary<string, object> htmlAttributes)
         {
-            string rawUrl = this.helper.ViewContext.HttpContext.Request.RawUrl;
+            string rawUrl = _helper.ViewContext.HttpContext.Request.RawUrl;
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(formType, rawUrl, FormMethod.Post, htmlAttributes));
+                _helper, new BootstrapForm(formType, rawUrl, FormMethod.Post, htmlAttributes));
         }
 
-        public BootstrapFormBuilder<TModel> BeginForm(object routeValues, BootstrapFormType formType = BootstrapFormType.Horizontal)
-        {
-            return BeginForm(null, null, new RouteValueDictionary(routeValues), FormMethod.Post, new RouteValueDictionary(), formType);
-        }
+        //public BootstrapFormBuilder<TModel> BeginForm(object routeValues, BootstrapFormType formType = BootstrapFormType.Horizontal)
+        //{
+        //    return BeginForm(null, null, new RouteValueDictionary(routeValues), FormMethod.Post, new RouteValueDictionary(), formType);
+        //}
 
         public BootstrapFormBuilder<TModel> BeginForm(RouteValueDictionary routeValues, BootstrapFormType formType = BootstrapFormType.Horizontal)
         {
@@ -366,9 +380,9 @@ namespace Webs.Bootstraps
 
         public BootstrapFormBuilder<TModel> BeginForm(string actionName, string controllerName, RouteValueDictionary routeValues, FormMethod method, IDictionary<string, object> htmlAttributes, BootstrapFormType formType = BootstrapFormType.Horizontal)
         {
-            string formAction = UrlHelper.GenerateUrl(null, actionName, controllerName, routeValues, this.helper.RouteCollection, this.helper.ViewContext.RequestContext, true);
+            string formAction = UrlHelper.GenerateUrl(null, actionName, controllerName, routeValues, _helper.RouteCollection, _helper.ViewContext.RequestContext, true);
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(formType, formAction, method, htmlAttributes));
+                _helper, new BootstrapForm(formType, formAction, method, htmlAttributes));
         }
 
         public BootstrapFormBuilder<TModel> BeginRouteForm(object routeValues, BootstrapFormType formType = BootstrapFormType.Horizontal)
@@ -428,9 +442,9 @@ namespace Webs.Bootstraps
 
         public BootstrapFormBuilder<TModel> BeginRouteForm(string routeName, RouteValueDictionary routeValues, FormMethod method, IDictionary<string, object> htmlAttributes, BootstrapFormType formType = BootstrapFormType.Horizontal)
         {
-            string formAction = UrlHelper.GenerateUrl(routeName, null, null, routeValues, this.helper.RouteCollection, this.helper.ViewContext.RequestContext, false);
+            string formAction = UrlHelper.GenerateUrl(routeName, null, null, routeValues, _helper.RouteCollection, _helper.ViewContext.RequestContext, false);
             return new BootstrapFormBuilder<TModel>(
-                this.helper, new BootstrapForm(formType, formAction, method, htmlAttributes));
+                _helper, new BootstrapForm(formType, formAction, method, htmlAttributes));
         }
 
         #endregion Forms
@@ -441,10 +455,10 @@ namespace Webs.Bootstraps
         {
             if (heroUnit == null)
             {
-                throw new ArgumentNullException("heroUnit");
+                throw new ArgumentNullException(nameof(heroUnit));
             }
 
-            return new HeroUnitBuilder<TModel>(this.helper, heroUnit);
+            return new HeroUnitBuilder<TModel>(_helper, heroUnit);
         }
 
         #endregion Hero Unit
@@ -482,10 +496,10 @@ namespace Webs.Bootstraps
         {
             if (modal == null)
             {
-                throw new ArgumentNullException("modal");
+                throw new ArgumentNullException(nameof(modal));
             }
 
-            return new ModalBuilder<TModel>(this.helper, modal);
+            return new ModalBuilder<TModel>(_helper, modal);
         }
 
         #endregion Modal (Dialog)
@@ -516,7 +530,7 @@ namespace Webs.Bootstraps
             sb.Append(@"<span class=""add-on"">");
             sb.Append(string.IsNullOrEmpty(currencySymbol) ? "$" : currencySymbol);
             sb.Append("</span>");
-            sb.Append(helper.TextBox(name, dollars, htmlAttributes));
+            sb.Append(_helper.TextBox(name, dollars, htmlAttributes));
 
             if (showCents)
             {
@@ -543,7 +557,7 @@ namespace Webs.Bootstraps
         {
             if (string.IsNullOrEmpty(text))
             {
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
             }
 
             var builder = new TagBuilder("blockquote");
@@ -588,10 +602,9 @@ namespace Webs.Bootstraps
         {
             if (subNav == null)
             {
-                throw new ArgumentNullException("subNav");
+                throw new ArgumentNullException(nameof(subNav));
             }
-
-            return new SubNavBarBuilder<TModel>(this.helper, subNav);
+            return new SubNavBarBuilder<TModel>(_helper, subNav);
         }
 
         #endregion SubNavBar
@@ -602,10 +615,10 @@ namespace Webs.Bootstraps
         {
             if (tabs == null)
             {
-                throw new ArgumentNullException("tabs");
+                throw new ArgumentNullException(nameof(tabs));
             }
 
-            return new TabsBuilder<TModel>(this.helper, tabs);
+            return new TabsBuilder<TModel>(_helper, tabs);
         }
 
         #endregion Tabs
@@ -624,7 +637,7 @@ namespace Webs.Bootstraps
             aBuilder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(aHtmlAttributes));
             aBuilder.MergeAttribute("class", "thumbnail");
 
-            var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
+            var urlHelper = new UrlHelper(_helper.ViewContext.RequestContext);
 
             var imgBuilder = new TagBuilder("img");
             imgBuilder.MergeAttribute("src", urlHelper.Content(src));
@@ -640,10 +653,10 @@ namespace Webs.Bootstraps
         {
             if (thumbnail == null)
             {
-                throw new ArgumentNullException("thumbnail");
+                throw new ArgumentNullException(nameof(thumbnail));
             }
 
-            return new ThumbnailBuilder<TModel>(this.helper, thumbnail);
+            return new ThumbnailBuilder<TModel>(_helper, thumbnail);
         }
 
         #endregion Thumbnails
@@ -654,10 +667,9 @@ namespace Webs.Bootstraps
         {
             if (toolbar == null)
             {
-                throw new ArgumentNullException("tabs");
+                throw new ArgumentNullException(nameof(toolbar));
             }
-
-            return new ToolbarBuilder<TModel>(this.helper, toolbar);
+            return new ToolbarBuilder<TModel>(_helper, toolbar);
         }
 
         #endregion Toolbar

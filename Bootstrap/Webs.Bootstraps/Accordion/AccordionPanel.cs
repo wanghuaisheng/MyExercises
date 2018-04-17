@@ -6,23 +6,23 @@ namespace Webs.Bootstraps.Accordion
 {
     public class AccordionPanel : IDisposable
     {
-        private readonly TextWriter textWriter;
+        private readonly TextWriter _textWriter;
 
         internal AccordionPanel(TextWriter writer, string title, string panelId, string parentAccordionId)
         {
             if (string.IsNullOrEmpty(title))
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
-            this.textWriter = writer;
+            _textWriter = writer;
 
-            this.textWriter.Write(@"<div class=""accordion-group"">");
+            _textWriter.Write(@"<div class=""accordion-group"">");
 
-            TagBuilder builder = new TagBuilder("div");
+            var builder = new TagBuilder("div");
             builder.AddCssClass("accordion-heading");
 
-            TagBuilder builder2 = new TagBuilder("a");
+            var builder2 = new TagBuilder("a");
             builder2.Attributes.Add("href", "#" + panelId);
             builder2.AddCssClass("accordion-toggle");
             builder2.InnerHtml = title;
@@ -31,19 +31,19 @@ namespace Webs.Bootstraps.Accordion
 
             builder.InnerHtml = builder2.ToString();
 
-            this.textWriter.Write(builder.ToString());
+            _textWriter.Write(builder.ToString());
 
             builder = new TagBuilder("div");
             builder.AddCssClass("accordion-body collapse");
             builder.MergeAttribute("id", panelId);
 
-            this.textWriter.Write(builder.ToString(TagRenderMode.StartTag));
-            this.textWriter.Write(@"<div class=""accordion-inner"">");
+            _textWriter.Write(builder.ToString(TagRenderMode.StartTag));
+            _textWriter.Write(@"<div class=""accordion-inner"">");
         }
 
         public void Dispose()
         {
-            this.textWriter.Write("</div></div></div>");
+            _textWriter.Write("</div></div></div>");
         }
     }
 }
